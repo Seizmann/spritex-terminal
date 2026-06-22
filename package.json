@@ -1,0 +1,35 @@
+{
+  "name": "spritex-terminal",
+  "version": "1.0.0",
+  "description": "A modern native terminal emulator with full Unicode and Bengali rendering support.",
+  "homepage": "https://github.com/spritexai/spritex-terminal",
+  "main": "main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "rebuild": "electron-rebuild -f -w node-pty",
+    "postinstall": "electron-rebuild",
+    "build": "electron-builder"
+  },
+  "keywords": [
+    "terminal",
+    "xterm",
+    "node-pty",
+    "electron",
+    "bengali",
+    "unicode"
+  ],
+  "author": "Sijan / SpritexAI <contact@sijan.pro>",
+  "license": "MIT",
+  "dependencies": {
+    "node-pty": "^1.1.0",
+    "@xterm/xterm": "^5.3.0",
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/addon-web-links": "^0.11.0"
+  },
+  "devDependencies": {
+    "electron": "^28.2.0",
+    "electron-builder": "^24.9.1",
+    "@electron/rebuild": "^3.4.0"
+  }
+}

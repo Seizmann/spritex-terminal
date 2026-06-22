@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spritex Terminal</title>
+  <!-- Load Inter font for sleek UI typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Load Noto Sans Bengali for premium fallback rendering -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../node_modules/@xterm/xterm/css/xterm.css" />
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+
+  <!-- App Wrapper -->
+  <div id="app">
+    <!-- Top Tab Bar -->
+    <header id="tab-bar">
+      <div id="tabs-container" class="tabs-container">
+        <!-- Tabs will be rendered here dynamically -->
+      </div>
+      <button id="add-tab-btn" class="icon-btn" title="Open New Tab (Ctrl+T)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      </button>
+      <button id="open-folder-btn" class="icon-btn" title="Open Folder in New Tab (Ctrl+O)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+      </button>
+      
+      <div class="header-actions">
+        <button id="history-btn" class="icon-btn" title="Fuzzy History Search (Ctrl+R)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+        <button id="settings-btn" class="icon-btn" title="Open Settings (Ctrl+,)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Terminal Container -->
+    <main id="terminal-container">
+      <!-- xterm containers will be rendered here dynamically, mapped by active tab -->
+    </main>
+
+    <!-- Smart Autocomplete Overlay -->
+    <div id="autocomplete-popup" class="autocomplete-popup hidden">
+      <div class="autocomplete-header">Suggestions</div>
+      <ul id="autocomplete-list" class="autocomplete-list">
+        <!-- List items generated dynamically -->
+      </ul>
+      <div class="autocomplete-footer">Use ↑↓ to navigate, Enter to insert, Esc to close</div>
+    </div>
+
+    <!-- Fuzzy History Search Modal -->
+    <div id="history-modal" class="modal-overlay hidden">
+      <div class="modal-content glassmorphism animate-fade-in">
+        <div class="modal-header">
+          <h2>Fuzzy Command History</h2>
+          <button id="close-history-btn" class="icon-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <div class="search-input-wrapper">
+          <input type="text" id="history-search-input" placeholder="Type to search history..." autofocus />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </div>
+        <div class="history-results-container">
+          <ul id="history-results-list">
+            <!-- Dynamically populated -->
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <span>Use <b>↑↓</b> to navigate, <b>Enter</b> to run command, <b>Esc</b> to exit</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Drawer -->
+    <div id="settings-drawer" class="drawer hidden">
+      <div class="drawer-header">
+        <h2>Terminal Settings</h2>
+        <button id="close-settings-btn" class="icon-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="drawer-body">
+        <form id="settings-form">
+          
+          <!-- Appearance Section -->
+          <div class="settings-section">
+            <h3>Appearance</h3>
+            
+            <div class="form-group">
+              <label for="setting-theme">Color Theme</label>
+              <select id="setting-theme">
+                <option value="spritex-dark">Spritex Dark (Default)</option>
+                <option value="minimal-dark">Minimal Dark</option>
+                <option value="solarized-dark">Solarized Dark</option>
+                <option value="custom">Custom Theme</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="setting-font-family">Font Family</label>
+              <input type="text" id="setting-font-family" placeholder="Noto Sans Mono, Courier New, monospace" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half">
+                <label for="setting-font-size">Font Size (px)</label>
+                <input type="number" id="setting-font-size" min="8" max="72" />
+              </div>
+              <div class="form-group half">
+                <label for="setting-line-height">Line Height</label>
+                <input type="number" id="setting-line-height" min="1" max="3" step="0.1" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half">
+                <label for="setting-cursor-style">Cursor Style</label>
+                <select id="setting-cursor-style">
+                  <option value="block">Block █</option>
+                  <option value="underline">Underline _</option>
+                  <option value="bar">Bar |</option>
+                </select>
+              </div>
+              <div class="form-group half check-group">
+                <label for="setting-cursor-blink" class="checkbox-label">
+                  <input type="checkbox" id="setting-cursor-blink" />
+                  Cursor Blinking
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Behavior Section -->
+          <div class="settings-section">
+            <h3>Behavior</h3>
+            
+            <div class="form-group">
+              <label for="setting-shell">Startup Shell</label>
+              <input type="text" id="setting-shell" placeholder="/bin/zsh" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half">
+                <label for="setting-scrollback">Scrollback Limit</label>
+                <input type="number" id="setting-scrollback" min="100" max="50000" />
+              </div>
+              <div class="form-group half check-group">
+                <label for="setting-mouse-copy" class="checkbox-label">
+                  <input type="checkbox" id="setting-mouse-copy" />
+                  Copy on Select
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Custom Colors Section (Visible when custom theme is selected) -->
+          <div id="custom-theme-colors" class="settings-section hidden">
+            <h3>Custom Palette Colors</h3>
+            
+            <div class="color-grid">
+              <div class="color-pick">
+                <label for="color-bg">Bg</label>
+                <input type="color" id="color-bg" />
+              </div>
+              <div class="color-pick">
+                <label for="color-fg">Fg</label>
+                <input type="color" id="color-fg" />
+              </div>
+              <div class="color-pick">
+                <label for="color-cursor">Cursor</label>
+                <input type="color" id="color-cursor" />
+              </div>
+            </div>
+            
+            <h4>ANSI Colors</h4>
+            <div class="color-grid-ansi">
+              <div class="color-pick"><label>Black</label><input type="color" id="ansi-black" /></div>
+              <div class="color-pick"><label>Red</label><input type="color" id="ansi-red" /></div>
+              <div class="color-pick"><label>Green</label><input type="color" id="ansi-green" /></div>
+              <div class="color-pick"><label>Yellow</label><input type="color" id="ansi-yellow" /></div>
+              <div class="color-pick"><label>Blue</label><input type="color" id="ansi-blue" /></div>
+              <div class="color-pick"><label>Magenta</label><input type="color" id="ansi-magenta" /></div>
+              <div class="color-pick"><label>Cyan</label><input type="color" id="ansi-cyan" /></div>
+              <div class="color-pick"><label>White</label><input type="color" id="ansi-white" /></div>
+            </div>
+          </div>
+
+          <!-- Shortcuts reference list -->
+          <div class="settings-section">
+            <h3>Keyboard Shortcuts</h3>
+            <div class="shortcuts-list">
+              <div class="shortcut-item"><span>New Tab</span><kbd>Ctrl + T</kbd></div>
+              <div class="shortcut-item"><span>Close Tab</span><kbd>Ctrl + W</kbd></div>
+              <div class="shortcut-item"><span>Next Tab</span><kbd>Ctrl + Tab</kbd></div>
+              <div class="shortcut-item"><span>Prev Tab</span><kbd>Ctrl + Shift + Tab</kbd></div>
+              <div class="shortcut-item"><span>Copy Selection</span><kbd>Ctrl + Shift + C</kbd></div>
+              <div class="shortcut-item"><span>Paste Clipboard</span><kbd>Ctrl + Shift + V</kbd></div>
+              <div class="shortcut-item"><span>Fuzzy Search History</span><kbd>Ctrl + R</kbd></div>
+              <div class="shortcut-item"><span>Settings Drawer</span><kbd>Ctrl + ,</kbd></div>
+              <div class="shortcut-item"><span>Zoom In / Out</span><kbd>Ctrl + +/-</kbd></div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="drawer-footer">
+        <button id="btn-save-settings" class="btn btn-primary">Save Changes</button>
+        <button id="btn-cancel-settings" class="btn btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="themes.js"></script>
+  <script src="autocomplete.js"></script>
+  <script src="history-search.js"></script>
+  <script src="settings.js"></script>
+  <script src="tabs.js"></script>
+  <script src="terminal.js"></script>
+</body>
+</html>

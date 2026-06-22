@@ -1,0 +1,18 @@
+appId: com.spritexai.spritex-terminal
+productName: Spritex Terminal
+directories:
+  output: dist
+files:
+  - "main/**/*"
+  - "renderer/**/*"
+  - "assets/**/*"
+  - "package.json"
+linux:
+  target:
+    - deb
+  category: Utility
+  icon: assets/icon.png
+  desktop:
+    Name: Spritex Terminal
+    Comment: A modern terminal emulator with perfect Bengali font rendering.
+    Categories: TerminalEmulator;System;Utility;

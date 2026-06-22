@@ -1,0 +1,72 @@
+const themes = {
+  "spritex-dark": {
+    background: "#0d1117",
+    foreground: "#e6edf3",
+    cursor: "#58a6ff",
+    cursorAccent: "#0d1117",
+    black: "#21262d",
+    red: "#ff7b72",
+    green: "#3fb950",
+    yellow: "#d29922",
+    blue: "#58a6ff",
+    magenta: "#bc8cff",
+    cyan: "#39c5cf",
+    white: "#b1bac4",
+    brightBlack: "#484f58",
+    brightRed: "#ffa198",
+    brightGreen: "#56d364",
+    brightYellow: "#e3b341",
+    brightBlue: "#79c0ff",
+    brightMagenta: "#d2a8ff",
+    brightCyan: "#56d4dd",
+    brightWhite: "#ffffff"
+  },
+  "minimal-dark": {
+    background: "#000000",
+    foreground: "#ffffff",
+    cursor: "#ffffff",
+    cursorAccent: "#000000",
+    black: "#000000",
+    red: "#ff5555",
+    green: "#55ff55",
+    yellow: "#ffff55",
+    blue: "#5555ff",
+    magenta: "#ff55ff",
+    cyan: "#55ffff",
+    white: "#bbbbbb",
+    brightBlack: "#555555",
+    brightRed: "#ff5555",
+    brightGreen: "#55ff55",
+    brightYellow: "#ffff55",
+    brightBlue: "#5555ff",
+    brightMagenta: "#ff55ff",
+    brightCyan: "#55ffff",
+    brightWhite: "#ffffff"
+  },
+  "solarized-dark": {
+    background: "#002b36",
+    foreground: "#839496",
+    cursor: "#93a1a1",
+    cursorAccent: "#002b36",
+    black: "#073642",
+    red: "#dc322f",
+    green: "#859900",
+    yellow: "#b58900",
+    blue: "#268bd2",
+    magenta: "#d33682",
+    cyan: "#2aa198",
+    white: "#eee8d5",
+    brightBlack: "#002b36",
+    brightRed: "#cb4b16",
+    brightGreen: "#586e75",
+    brightYellow: "#657b83",
+    brightBlue: "#839496",
+    brightMagenta: "#6c71c4",
+    brightCyan: "#93a1a1",
+    brightWhite: "#fdf6e3"
+  }
+};
+
+if (typeof module !== 'undefined') {
+  module.exports = themes;
+}
